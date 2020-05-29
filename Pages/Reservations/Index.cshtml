@@ -1,0 +1,99 @@
+﻿@page
+@model VPM.Pages.Reservations.IndexModel
+
+@{
+    string title = string.Empty;
+
+    if (User.IsInRole("Admin"))
+    {
+        title = "All Reservations";
+    }
+    else if (User.IsInRole("Manager"))
+    {
+        title = "Building Reservations";
+    }
+    else if (User.IsInRole("Resident"))
+    {
+        title = "My Reservations";
+    }
+
+    ViewData["Title"] = title;
+
+}
+
+<h1>@title</h1>
+<hr />
+<p>
+    <a asp-page="Create"><input type="button" value="Create new reservation" class="btn btn-primary" /></a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Reservations[0].VehiclePlateNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reservations[0].StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reservations[0].EndTime)
+            </th>
+            @{
+                if (User.IsInRole("Admin"))
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations[0].ApplicationUser)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations[0].Building)
+                    </th>
+                }
+                else if (User.IsInRole("Manager"))
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations[0].ApplicationUser)
+                    </th>
+                }
+            }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Reservations)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehiclePlateNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndTime)
+                </td>
+                @{
+                    if (User.IsInRole("Admin"))
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Building.Name)
+                        </td>
+                    }
+                    else if (User.IsInRole("Manager"))
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.FullName)
+                        </td>
+                    }
+                }
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

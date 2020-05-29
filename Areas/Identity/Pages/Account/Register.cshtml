@@ -1,0 +1,62 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h4>Create a new account.</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ApplicationUser.FullName"></label>
+                <input asp-for="ApplicationUser.FullName" class="form-control" />
+                <span asp-validation-for="ApplicationUser.FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApplicationUser.Email"></label>
+                <input asp-for="ApplicationUser.Email" class="form-control" />
+                <span asp-validation-for="ApplicationUser.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApplicationUser.Password"></label>
+                <input asp-for="ApplicationUser.Password" class="form-control" />
+                <span asp-validation-for="ApplicationUser.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApplicationUser.ConfirmPassword"></label>
+                <input asp-for="ApplicationUser.ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ApplicationUser.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Building</label>
+                <select asp-for="SelectedBuildingId" asp-items="Model.BuildingOptions" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApplicationUser.Unit"></label>
+                <input asp-for="ApplicationUser.Unit" class="form-control" />
+                <span asp-validation-for="ApplicationUser.Unit" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h4>Use the form to register for VPM.</h4>
+            <hr />
+            <div>
+                <p>
+                    Use the dropdown on the left to select your building.
+                </p>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

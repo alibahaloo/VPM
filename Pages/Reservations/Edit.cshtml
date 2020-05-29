@@ -1,0 +1,70 @@
+﻿@page
+@model VPM.Pages.Reservations.EditModel
+
+@{
+    ViewData["Title"] = "Reservation | Edit";
+}
+
+<h1>Edit Reservation</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+
+            <input type="hidden" asp-for="Reservation.Id" />
+            <input type="hidden" asp-for="Reservation.BuildingId" />
+            <input type="hidden" asp-for="Reservation.ApplicationUserId" />
+            <div class="form-group">
+                <label asp-for="Reservation.VehiclePlateNumber" class="control-label"></label>
+                <input asp-for="Reservation.VehiclePlateNumber" class="form-control" />
+                <span asp-validation-for="Reservation.VehiclePlateNumber" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-7 form-group">
+                    <label asp-for="Reservation.Date" class="control-label"></label>
+                    <input asp-for="Reservation.Date" class="form-control" />
+                    <span asp-validation-for="Reservation.Date" class="text-danger"></span>
+                </div>
+                <div class="col-md-5 form-group">
+                    <label asp-for="Reservation.StartTime" class="control-label"></label>
+                    <input asp-for="Reservation.StartTime" class="form-control" step="@Model.Reservation.Building.StartTimeStep" />
+                    <span asp-validation-for="Reservation.StartTime" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h6>Duration</h6>
+
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <label asp-for="Reservation.DurationHour" class="control-label"></label>
+                    <input asp-for="Reservation.DurationHour" class="form-control" max="@Model.Reservation.Building.AllowedReservationLength" min="0" step="1" />
+                    <span asp-validation-for="Reservation.DurationHour" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label asp-for="Reservation.DurationMin" class="control-label"></label>
+                    <input asp-for="Reservation.DurationMin" class="form-control" min="0" max="@Model.Reservation.Building.MinuteMaxLength" step="@Model.Reservation.Building.MinuteStep" />
+                    <span asp-validation-for="Reservation.DurationMin" class="text-danger"></span>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" /> |
+                <a asp-page="./Index">
+                    <input type="button" value="Back to List" class="btn btn-dark" />
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-8">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        @await Component.InvokeAsync("WeeklyView", new { Building = Model.Reservation.Building })
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

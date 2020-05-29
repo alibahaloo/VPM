@@ -1,0 +1,141 @@
+﻿@page
+@model VPM.Pages.Users.IndexModel
+@{
+    ViewData["Title"] = "Users";
+}
+
+<script type="text/javascript">
+    function setRandomPassword() {
+        var randomstring = Math.random().toString(36).slice(-8);
+        document.getElementById("Input_UserPassword").value = randomstring;
+    }
+</script>
+
+<h2>Add new user</h2>
+<hr />
+
+<form method="post">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Input.UserEmail" class="control-label"></label>
+                <input asp-for="Input.UserEmail" class="form-control" />
+                <span asp-validation-for="Input.UserEmail" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.UserFullName" class="control-label"></label>
+                <input asp-for="Input.UserFullName" class="form-control" />
+                <span asp-validation-for="Input.UserFullName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label asp-for="Input.UserPassword" class="control-label"></label>
+                <input asp-for="Input.UserPassword" class="form-control" />
+                <span asp-validation-for="Input.UserPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+                <select asp-for="Input.SelectedRoleName" asp-items="Model.RoleOptions" class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label asp-for="Input.Unit"></label>
+                <input asp-for="Input.Unit" class="form-control" />
+                <span asp-validation-for="Input.Unit" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Building</label>
+                <select asp-for="Input.SelectedBuildingId" asp-items="Model.BuildingOptions" class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label>Tools</label>
+            <div class="form-group">
+                <input type="button" value="Generate Password" class="btn btn-secondary" onclick="setRandomPassword()" />
+                <hr />
+                <input type="submit" value="Add User" class="btn btn-primary" /> |
+                <a asp-page="../Admin/Users">
+                    <input type="button" value="Cancel" class="btn btn-dark" />
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <h3>Existing Users</h3>
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Email Address
+                    </th>
+                    <th>
+                        Full Name
+                    </th>
+                    <th>
+                        Unit #
+                    </th>
+                    <th>
+                        Building
+                    </th>
+                    <th>
+                        Roles
+                    </th>
+                    <th>
+                        Created at
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Users)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Unit)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Building.Name)
+                        </td>
+                        <td>
+                            @foreach (var userRole in item.UserRoles)
+                            {
+                                <span>@userRole.Role.Name</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modeItem => item.Created)
+                        </td>
+                        <td>
+                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

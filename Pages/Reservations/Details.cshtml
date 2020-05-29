@@ -1,0 +1,50 @@
+﻿@page
+@model VPM.Pages.Reservations.DetailsModel
+
+@{
+    ViewData["Title"] = "Reservation | Details";
+}
+
+<h1>Reservation Details</h1>
+<hr />
+<div>    
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Reservation.VehiclePlateNumber)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Reservation.VehiclePlateNumber)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Reservation.StartTime)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Reservation.StartTime)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Reservation.EndTime)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Reservation.EndTime)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Reservation.ApplicationUser)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Reservation.ApplicationUser.FullName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Reservation.Building)
+        </dt>
+        <dd class="col-sm-9">
+            <span>@Html.DisplayFor(model => model.Reservation.Building.Name)</span> (<span>@Html.DisplayFor(model => model.Reservation.Building.Address)</span>)
+        </dd>
+    </dl>
+</div>
+<hr />
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Reservation.Id"><input type="button" value="Edit" class="btn btn-warning" /></a> |
+    <a asp-page="./Index">
+        <input type="button" value="Back to List" class="btn btn-dark" />
+    </a>
+</div>

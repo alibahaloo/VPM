@@ -1,0 +1,65 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model VPM.ViewComponents.WeeklyViewViewComponents
+
+<style type="text/css">
+    #WeeklyCalendar {
+        border: 1px #2b2b2b solid;
+        width: 100%;
+        min-width: 500px;
+        font-size: x-small;
+    }
+
+        #WeeklyCalendar td, #WeeklyCalendar th {
+            border: 1px #2b2b2b solid;
+            text-align: center;
+        }        
+</style>
+
+<section id="calendar">
+    <table id="WeeklyCalendar">
+        <thead>
+            <tr>
+                <th style="width: 60px">Time</th>
+                @{
+                    foreach (var day in Model.ThisWeekDays)
+                    {
+                        <th>@day.ToString("ddd yyyy-MM-dd")</th>
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var time in Model.Hours)
+            {
+                <tr>
+                    <td>
+                        @time
+                    </td>
+                    @foreach (var day in Model.ThisWeekDays)
+                    {
+                        <td>
+                            @{
+                                string newString = day.Date.ToString("yyyy-MM-dd") + " " + time;
+                                DateTime cellDate = DateTime.ParseExact(newString, "yyyy-MM-dd h:mm tt", null);
+
+                                foreach (var reservation in Model.ThisWeekReservations)
+                                {
+                                    if (reservation.StartTime <= cellDate && reservation.EndTime >= cellDate.AddHours(1))
+                                    {
+                                        <span style="background-color:green; text-align: center; display: inline-block; width: 100%;">
+                                            @reservation.VehiclePlateNumber
+                                        </span>
+                                    }
+                                }
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

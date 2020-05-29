@@ -1,0 +1,100 @@
+﻿@page
+@model VPM.Pages.Users.DetailsModel
+@{
+    ViewData["Title"] = "User | Details";
+}
+
+<h1>User Details</h1>
+<hr />
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.FullName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.Created)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.Created)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.Building.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.Building.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.Building.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.Building.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser.Unit)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.Unit)
+        </dd>
+    </dl>
+    <a asp-page="./Edit" asp-route-id="@Model.ApplicationUser.Id"><input type="button" value="Edit" class="btn btn-warning" /></a> |
+    <a asp-page="./Index">
+        <input type="button" value="Back to List" class="btn btn-dark" />
+    </a>
+</div>
+
+<hr />
+
+<h2>Reservations</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUser.Reservations[0].VehiclePlateNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUser.Reservations[0].StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUser.Reservations[0].EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUser.Reservations[0].Created)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reservation in Model.ApplicationUser.Reservations)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => reservation.VehiclePlateNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => reservation.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => reservation.EndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => reservation.Created)
+            </td>
+            <td>
+                <a asp-page="../Reservations/Edit" asp-route-id="@reservation.Id">Edit</a> |
+                <a asp-page="../Reservations/Details" asp-route-id="@reservation.Id">Details</a> |
+                <a asp-page="../Reservations/Delete" asp-route-id="@reservation.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

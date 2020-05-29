@@ -1,0 +1,43 @@
+﻿@page
+@model VPM.Pages.Roles.IndexModel
+@{
+    ViewData["Title"] = "Roles";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <h3>New Role</h3>
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="RoleName" class="control-label"></label>
+                <input asp-for="RoleName" class="form-control" />
+                <span asp-validation-for="RoleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+                <a asp-page="../Admin/Roles">
+                    <input type="button" value="Cancel" class="btn btn-dark" />
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-8">
+        <h3>Existing Roles</h3>
+
+        <table class="table">
+            <tbody>
+                @foreach (var item in Model.Roles)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
