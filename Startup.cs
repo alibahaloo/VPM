@@ -82,6 +82,8 @@ namespace VPM
             services.AddTransient<ReservationService>();
             services.AddTransient<UserService>();
             services.AddTransient<RoleService>();
+            //Considering Using Static Class instead if possible
+            services.AddTransient<AppService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -38,6 +38,11 @@ namespace VPM.Services
             throw new NotImplementedException();
         }
 
+        public async Task<ApplicationUser> GetDefaultUserAsync()
+        {
+            return await _context.Users.FirstOrDefaultAsync();
+        }
+
         public async Task<ApplicationUser> GetUserAsync(string userId)
         {
             try

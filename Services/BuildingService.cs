@@ -56,6 +56,11 @@ namespace VPM.Services
             }
         }
 
+        public async Task<Building> GetDefaultBuildingAsync()
+        {
+            return await _context.Buildings.FirstOrDefaultAsync();
+        }
+
         public Building GetBuilding(Guid buildingId)
         {
             try
