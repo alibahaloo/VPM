@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'vpm-app'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_6c449e6aa7e64fdeb8f395f4606b66e2 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_a5305355e0f9459985f79bc00e121dec }}
         package: ${{env.DOTNET_ROOT}}/myapp 
