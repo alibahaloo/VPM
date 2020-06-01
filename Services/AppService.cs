@@ -12,19 +12,40 @@ namespace VPM.Services
         private readonly RoleService _roleService;
         private readonly UserService _userService;
         private readonly BuildingService _buildingService;
+        private readonly ApplicationDbContext _context;
 
-        public AppService(RoleService roleService, UserService userService, BuildingService buildingService)
+        public AppService(RoleService roleService, UserService userService, BuildingService buildingService, ApplicationDbContext context)
         {
             _roleService = roleService;
             _userService = userService;
             _buildingService = buildingService;
+
+            _context = context;
+        }
+
+        public ServiceResult IsReadyToInitialize()
+        {
+            try
+            {
+                if (_context.Buildings.Count() > 0)
+                {
+                    return new ServiceResult { Success = false, Data = "Cannot Initializa: Database is already seeded. Default data found." };
+                }
+                else
+                {
+                    return new ServiceResult { Success = true };
+                }
+            }
+            catch (Exception ex)
+            {
+                //Probably the migrations haven't happend yet
+                return new ServiceResult { Success = false, Data = "Probably Migration Needed: " + ex.Message };
+            }
+
         }
 
         public async Task AddInitData()
         {
-            //Add Admin Role
-            //await _roleService.CreateRoleAsync("Admin");
-
             //Add Default Building
             await _buildingService.CreateBuildingAsync(new Building {
                 Name = "Default",
@@ -37,7 +58,7 @@ namespace VPM.Services
 
             Building defaultBuilding = await _buildingService.GetDefaultBuildingAsync();
 
-            var result = await _userService.CreateUserAsync(new ApplicationUser
+            await _userService.CreateUserAsync(new ApplicationUser
             {
                 UserName = "admin@vpm-app.com",
                 Email = "admin@vpm-app.com",

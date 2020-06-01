@@ -29,21 +29,44 @@ namespace VPM.Pages.Init
             [DisplayName("Password")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
+
+            [Required]
+            [DisplayName("Master Password")]
+            [DataType(DataType.Password)]
+            public string MasterPassword { get; set; }
         }
         private readonly AppService _appService;
+
+        public bool Error { get; set; }
 
         public IndexModel(AppService appService)
         {
             _appService = appService;
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public IActionResult OnGet()
         {
+            //Check if there's a default user, then go to home page
+            var result = _appService.IsReadyToInitialize();
+
+            if (!result.Success)
+            {
+                Error = true;
+                ModelState.AddModelError(string.Empty, result.Data.ToString());
+            }
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (Input.MasterPassword != "master")
+            {
+                ModelState.AddModelError(string.Empty, "incorrect master password");
+                return Page();
+            }
+
+
             await _appService.AddInitData();
             return RedirectToPage();
         }

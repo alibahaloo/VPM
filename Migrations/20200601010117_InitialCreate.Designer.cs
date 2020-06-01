@@ -10,7 +10,7 @@ using VPM.Data;
 namespace VPM.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200531235246_InitialCreate")]
+    [Migration("20200601010117_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
