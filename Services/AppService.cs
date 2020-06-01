@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VPM.Data;
@@ -9,14 +8,12 @@ namespace VPM.Services
 {
     public class AppService
     {
-        private readonly RoleService _roleService;
         private readonly UserService _userService;
         private readonly BuildingService _buildingService;
         private readonly ApplicationDbContext _context;
 
-        public AppService(RoleService roleService, UserService userService, BuildingService buildingService, ApplicationDbContext context)
+        public AppService(UserService userService, BuildingService buildingService, ApplicationDbContext context)
         {
-            _roleService = roleService;
             _userService = userService;
             _buildingService = buildingService;
 
@@ -44,7 +41,7 @@ namespace VPM.Services
 
         }
 
-        public async Task AddInitData()
+        public async Task AddDefaultData(string adminEmail, string adminPassword)
         {
             //Add Default Building
             await _buildingService.CreateBuildingAsync(new Building {
@@ -53,19 +50,20 @@ namespace VPM.Services
                 AllowedReservationLength = 2,
                 AllowedReservationPerUnit = 1,
                 VisitorParkingCount = 5,
-                ReservationInterval = AllowedReservationIntervals.FH
+                ReservationInterval = AllowedReservationIntervals.FH,
+                IsActive = true,
             });
 
             Building defaultBuilding = await _buildingService.GetDefaultBuildingAsync();
 
             await _userService.CreateUserAsync(new ApplicationUser
             {
-                UserName = "admin@vpm-app.com",
-                Email = "admin@vpm-app.com",
+                UserName = adminEmail,
+                Email = adminEmail,
                 FullName = "Super Admin",
                 Unit = "69",
                 BuildingId = defaultBuilding.Id,
-                Password = "P@ssw0rd",
+                Password = adminPassword,
             });
 
             //Add Default User to Role admin

@@ -22,10 +22,6 @@ namespace VPM.Pages.Init
             public string Email { get; set; }
 
             [Required]
-            [DisplayName("Full Name")]
-            public string FullName { get; set; }
-
-            [Required]
             [DisplayName("Password")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
@@ -60,14 +56,16 @@ namespace VPM.Pages.Init
 
         public async Task<IActionResult> OnPostAsync()
         {
+            //TODO: Move "MASTER" password to a config or somewhere secure
             if (Input.MasterPassword != "master")
             {
+                //TODO MOve error message to some where generic
                 ModelState.AddModelError(string.Empty, "incorrect master password");
                 return Page();
             }
 
 
-            await _appService.AddInitData();
+            await _appService.AddDefaultData(Input.Email,Input.Password);
             return RedirectToPage();
         }
     }
