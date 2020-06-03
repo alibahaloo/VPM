@@ -14,6 +14,9 @@ namespace VPM.Services
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleService _roleService;
+
+        private readonly List<string> _errors = new List<string> { };
+
         public UserService(ApplicationDbContext context, 
             UserManager<ApplicationUser> userManager,
             RoleService roleService)
@@ -22,6 +25,26 @@ namespace VPM.Services
             _userManager = userManager;
             _roleService = roleService;
         }
+
+        public ServiceResult CheckNeedForDefaultUser()
+        {
+            //Find the first user that belongs to role "admin"
+            //if (_userManager.Users?.Where(u => u.UserRoles.Contains("Admin"))
+
+            if (_context.ApplicationUsers
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                .Select(u => u.UserRoles.FirstOrDefault(r => r.Role.Name == "Admin")).Count() > 0)
+            {
+                _errors.Add("At least 1 user in role Admin detected.");
+                return new ServiceResult { Success = false, Errors = _errors };
+            }
+            else
+            {
+                return new ServiceResult { Success = true};
+            }
+        }
+
 
         public async Task<List<ApplicationUser>> GetUsersAsync()
         {

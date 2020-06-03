@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VPM.Data;
@@ -12,6 +14,8 @@ namespace VPM.Services
         private readonly BuildingService _buildingService;
         private readonly ApplicationDbContext _context;
 
+        private readonly List<string> _errors = new List<string> { };
+
         public AppService(UserService userService, BuildingService buildingService, ApplicationDbContext context)
         {
             _userService = userService;
@@ -24,27 +28,48 @@ namespace VPM.Services
         {
             try
             {
-                if (_context.Buildings.Count() > 0)
+                var userResult = _userService.CheckNeedForDefaultUser();
+                var buildingResult = _buildingService.CheckNeedForDefaultBuilding();
+
+                if ((userResult.Errors != null) && (buildingResult.Errors != null))
                 {
-                    return new ServiceResult { Success = false, Data = "Cannot Initializa: Database is already seeded. Default data found." };
+                    foreach (var error in userResult.Errors)
+                    {
+                        _errors.Add(error);
+                    }
+
+                    foreach (var error in buildingResult.Errors)
+                    {
+                        _errors.Add(error);
+                    }
+
                 }
-                else
-                {
-                    return new ServiceResult { Success = true };
-                }
+
+                if ((!userResult.Success) || (!buildingResult.Success))
+                    return new ServiceResult { Success = false, Errors = _errors };
+
+                return new ServiceResult { Success = true };
             }
             catch (Exception ex)
             {
+                _errors.Add(ex.Message);
                 //Probably the migrations haven't happend yet
-                return new ServiceResult { Success = false, Data = "Probably Migration Needed: " + ex.Message };
+                return new ServiceResult { Success = false, Errors = _errors };
             }
 
         }
 
-        public async Task AddDefaultData(string adminEmail, string adminPassword)
+        public async Task<ServiceResult> AddDefaultData(string adminEmail, string adminPassword, string masterPassword)
         {
+            //TODO: store master password somwhere secure
+            if (masterPassword != "master")
+            {
+                _errors.Add("incorrect master password");
+                return new ServiceResult { Success = false, Errors = _errors };
+            }
+
             //Add Default Building
-            await _buildingService.CreateBuildingAsync(new Building {
+                await _buildingService.CreateBuildingAsync(new Building {
                 Name = "Default",
                 Address = "Planet Earth",
                 AllowedReservationLength = 2,
@@ -69,6 +94,8 @@ namespace VPM.Services
             //Add Default User to Role admin
             ApplicationUser defaultUser = await _userService.GetDefaultUserAsync();
             await _userService.AddUserToRoleAsync(defaultUser, "Admin");
+
+            return new ServiceResult { Success = true };
         }
     }
 }

@@ -252,6 +252,23 @@ namespace VPM.Services
             }
         }
 
+        public async Task<IList<Reservation>> GetReservationsByUnitAsync(string unit)
+        {
+            try
+            {
+                return await _context.Reservations
+                .Include(r => r.ApplicationUser)
+                .Include(r => r.Building)
+                .Where(r => r.ApplicationUser.Unit == unit)
+                .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                //log
+                throw ex;
+            }
+        }
+
         public async Task<IList<Reservation>> GetReservationsByBuildingAsync(Guid buildingId)
         {
             try

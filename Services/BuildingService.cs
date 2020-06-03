@@ -12,9 +12,27 @@ namespace VPM.Services
     public class BuildingService
     {
         private readonly ApplicationDbContext _context;
+
+        private readonly List<string> _errors = new List<string> { };
         public BuildingService(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public ServiceResult CheckNeedForDefaultBuilding()
+        {
+            /*
+             * It is not important to have a default building exactly as it was created during init
+             * What matters is to have at least 1 building in the system so that the app can be used
+             */
+            if (_context.Buildings.Count() > 0)
+            {
+                _errors.Add("At least 1 building detected.");
+                return new ServiceResult { Success = false, Errors = _errors };
+            } else
+            {
+                return new ServiceResult { Success = true }; // Buildings found
+            }
         }
 
         public async Task CreateBuildingAsync(Building building)

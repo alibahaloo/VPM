@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using VPM.Services;
 
 namespace VPM.Pages.Init
@@ -33,8 +30,6 @@ namespace VPM.Pages.Init
         }
         private readonly AppService _appService;
 
-        public bool Error { get; set; }
-
         public IndexModel(AppService appService)
         {
             _appService = appService;
@@ -47,8 +42,11 @@ namespace VPM.Pages.Init
 
             if (!result.Success)
             {
-                Error = true;
-                ModelState.AddModelError(string.Empty, result.Data.ToString());
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
+
             }
 
             return Page();
@@ -56,17 +54,19 @@ namespace VPM.Pages.Init
 
         public async Task<IActionResult> OnPostAsync()
         {
-            //TODO: Move "MASTER" password to a config or somewhere secure
-            if (Input.MasterPassword != "master")
+            var result = await _appService.AddDefaultData(Input.Email,Input.Password, Input.MasterPassword);
+
+            if (!result.Success)
             {
-                //TODO MOve error message to some where generic
-                ModelState.AddModelError(string.Empty, "incorrect master password");
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
                 return Page();
             }
 
-
-            await _appService.AddDefaultData(Input.Email,Input.Password);
-            return RedirectToPage();
+            //Refreshes the page, which redirects to the error .. may be better to 
+            return RedirectToPage("../Init/Success");
         }
     }
 }

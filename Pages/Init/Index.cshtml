@@ -8,8 +8,9 @@
 <hr />
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 @{
-    if (!Model.Error)
+    if (/*!Model.Error*/!ModelState.IsValid)
     {
+        <span>Cannot Initialize:</span>
         <a asp-page="../Index">Exit</a>
     }
     else

@@ -15,15 +15,19 @@ namespace VPM.Pages.Buildings
         private readonly BuildingService _buildingService;
         private readonly ReservationService _reservationService;
 
-        public IList<Reservation> Reservations { get; set; }
-
         public DetailsModel(BuildingService buildingService, ReservationService reservationService)
         {
             _buildingService = buildingService;
             _reservationService = reservationService;
         }
 
+        [BindProperty]
         public Building Building { get; set; }
+        [BindProperty]
+        public IList<Reservation> Reservations { get; set; }
+        [BindProperty]
+        public string Search { get; set; }
+
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
@@ -39,6 +43,12 @@ namespace VPM.Pages.Buildings
             {
                 return NotFound();
             }
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            Reservations = await _reservationService.GetReservationsByUnitAsync(Search);
             return Page();
         }
     }
