@@ -10,6 +10,8 @@ namespace VPM.Services
     public class RoleService
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly List<string> _errors = new List<string> { };
+
 
         public RoleService(RoleManager<ApplicationRole> roleManager)
         {
@@ -37,14 +39,32 @@ namespace VPM.Services
             }
         }
 
-        public async Task DeleteRoleAsync(string id)
+        public async Task<ServiceResult> DeleteRoleAsync(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
 
             if (role != null)
             {
-                await _roleManager.DeleteAsync(role);
+                if (role.Name == "Admin")
+                {
+                    _errors.Add("Cannot delete Admin role.");
+                    return new ServiceResult { Success = false, Errors = _errors };
+                }
+
+                try
+                {
+                    await _roleManager.DeleteAsync(role);
+                    return new ServiceResult { Success = true };
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+               
             }
+
+            _errors.Add("Role not found");
+            return new ServiceResult { Success = false, Errors = _errors };
         }
 
         public async Task<ApplicationRole> GetRoleAsync(string id)

@@ -45,7 +45,17 @@ namespace VPM.Pages.Roles
                 return NotFound();
             }
 
-            await _roleService.DeleteRoleAsync(id);
+            var result = await _roleService.DeleteRoleAsync(id);
+
+            if (!result.Success)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                    return Page();
+                }
+
+            }
 
             return RedirectToPage("./Index");
         }
