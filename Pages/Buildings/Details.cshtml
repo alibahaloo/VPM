@@ -1,7 +1,7 @@
 ﻿@page
 @model VPM.Pages.Buildings.DetailsModel
 @using VPM.Areas.Identity
-
+@using VPM.Pages.Shared.Components.ReservationFilter
 @{
     ViewData["Title"] = "Building | Details";
 }
@@ -88,24 +88,23 @@
                     }
                 }
             </dd>
-            <dd class="col-sm-12">
-                <form method="post">
-                    <div class="form-group">
-                        <label asp-for="Search" class="control-label"></label>
-                        <input asp-for="Search" class="form-control" placeholder="Plate/Unit Number"/>
-                        <span asp-validation-for="Search" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Search" class="btn btn-primary" />
-                    </div>
-                </form>
-            </dd>
         </dl>
     </div>
     <div class="col-md-8">
         @await Component.InvokeAsync("WeeklyView", new { Building = Model.Building })
     </div>
 </div>
+<hr />
+@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+{
+    AvailableInputs availableInputs = new AvailableInputs { ByValidity = true, ByUnit = true, ByBuilding = false, ByVehiclePlateNumber = true };
+
+    //Setting Query.BuildingId as Building since Building is binded
+    //Model.Query.BuildingId = Model.Building.Id;
+    //The rest of the properties are set within the component so no need to set them here
+    @await Component.InvokeAsync("ReservationFilter", new { Query = Model.Query, AvailableInputs = availableInputs })
+}
+<hr />
 <h3>Resevations</h3>
 <table class="table">
     <thead>
