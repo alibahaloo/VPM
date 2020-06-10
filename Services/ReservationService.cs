@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Frameworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using VPM.Data;
 using VPM.Data.Entities;
+using VPM.Data.Queries;
 
 namespace VPM.Services
 {
@@ -14,14 +18,18 @@ namespace VPM.Services
         public Task<ServiceResult> CreateReservationAsync(Reservation reservation);
         public Task<ServiceResult> UpdateReservationAsync(Reservation reservation);
         public Task DeleteReservationAsync(Guid reservationId);
-        public Task<IList<Reservation>> GetReservationsAsync();
-        public Task<IList<Reservation>> GetReservationsByUserAsync(string userId);
-        public Task<IList<Reservation>> GetReservationsByBuildingAsync(Guid buildingId);
+        public Task<IList<Reservation>> GetReservationsAsync(bool includeExpired = false);
+        public Task<IList<Reservation>> GetReservationsByUserAsync(string userId, bool includeExpired = false);
+        public Task<IList<Reservation>> GetReservationsByBuildingAsync(Guid buildingId, bool includeExpired = false);
         public Task<Reservation> GetReservationAsync(Guid reservationId);
+
+        //public Task<IList<Reservation>> FilterReservationsAsync(ReservationFilter reservationFilter);
     }
 
-    public class ReservationService : IReservationService
+    public class ReservationService /*: IReservationService*/
     {
+        public IQueryable<Reservation> Repo;
+
         private readonly ApplicationDbContext _context;
 
         private readonly List<string> _errors = new List<string> { };
@@ -29,6 +37,9 @@ namespace VPM.Services
         public ReservationService(ApplicationDbContext context)
         {
             _context = context;
+            Repo = _context.Reservations
+                .Include(r => r.ApplicationUser)
+                .Include(r => r.Building);
         }
 
         /*
@@ -117,7 +128,7 @@ namespace VPM.Services
 
             //TODO: Set reservation.Building
             //TODO: Set reservation.ApplicationUser
-            
+
         }
 
         private async Task SetBuildingAndUserAsync(Reservation reservation)
@@ -132,8 +143,8 @@ namespace VPM.Services
             //Check if related objects are null
             if (reservation.ApplicationUser is null)
                 reservation.ApplicationUser = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == reservation.ApplicationUserId);
-            
-            if (reservation.Building is null) 
+
+            if (reservation.Building is null)
                 reservation.Building = await _context.Buildings.FirstOrDefaultAsync(b => b.Id == reservation.BuildingId);
         }
 
@@ -172,7 +183,7 @@ namespace VPM.Services
                 _context.Reservations.Add(reservation);
                 await _context.SaveChangesAsync();
 
-                return new ServiceResult { Success = true};
+                return new ServiceResult { Success = true };
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -219,71 +230,14 @@ namespace VPM.Services
             }
         }
 
-        public async Task<IList<Reservation>> GetReservationsAsync()
+        public bool IsUserOwner(string userId, Reservation reservation)
         {
-            try
-            {
-                return await _context.Reservations
-                .Include(r => r.ApplicationUser) //May not be needed
-                .Include(r => r.Building) //May not be needed
-                .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                //log
-                throw ex;
-            }
+            return reservation.ApplicationUserId == userId;
         }
 
-        public async Task<IList<Reservation>> GetReservationsByUserAsync(string ApplicationUserId)
+        public string GetReservationDuration(Reservation reservation)
         {
-            try
-            {
-                return await _context.Reservations
-                .Include(r => r.ApplicationUser)
-                .Include(r => r.Building)
-                .Where(r => r.ApplicationUserId == ApplicationUserId)
-                .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                //log
-                throw ex;
-            }
-        }
-
-        public async Task<IList<Reservation>> GetReservationsByUnitAsync(string unit)
-        {
-            try
-            {
-                return await _context.Reservations
-                .Include(r => r.ApplicationUser)
-                .Include(r => r.Building)
-                .Where(r => r.ApplicationUser.Unit == unit)
-                .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                //log
-                throw ex;
-            }
-        }
-
-        public async Task<IList<Reservation>> GetReservationsByBuildingAsync(Guid buildingId)
-        {
-            try
-            {
-                return await _context.Reservations
-                .Include(r => r.ApplicationUser)
-                .Include(r => r.Building)
-                .Where(r => r.BuildingId == buildingId)
-                .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                //log
-                throw ex;
-            }
+            return "2:00";
         }
 
         public async Task<Reservation> GetReservationAsync(Guid reservationId)
@@ -302,15 +256,38 @@ namespace VPM.Services
             }
         }
 
-        public bool IsUserOwner(string userId, Reservation reservation)
+        public async Task<IList<Reservation>> GetReservationsAsync(ReservationQuery query)
         {
-            return reservation.ApplicationUserId == userId;
+            //Filtering based on the given Query
+            if (query.BuildingId != Guid.Empty)
+            {
+                Repo = Repo.Where(r => r.BuildingId == query.BuildingId);
+            }
+
+            if (query.Unit != null)
+            {
+                Repo = Repo.Where(r => r.ApplicationUser.Unit == query.Unit);
+            }
+
+            if (query.VehiclePlateNumber != null)
+            {
+                Repo = Repo.Where(r => r.VehiclePlateNumber == query.VehiclePlateNumber);
+            }
+
+            if (query.ApplicationUserId != null)
+            {
+                Repo = Repo.Where(r => r.ApplicationUserId == query.ApplicationUserId);
+            }
+
+            if (!query.ShowExpired)//Only showing the non-expired reservations
+            {
+                Repo = Repo.Where(r => r.EndTime >= DateTime.Now);
+            }
+
+            return await Repo.AsNoTracking().ToListAsync();
         }
 
-        public string GetReservationDuration(Reservation reservation)
-        {
-            return "2:00";
-        }
+
     }
 
 }

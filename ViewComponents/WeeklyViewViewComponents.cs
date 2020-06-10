@@ -232,6 +232,7 @@ namespace VPM.ViewComponents
 
         public IList<Reservation> GetWeekReservations()
         {
+            //TODO: Use Service to get this
             return _context.Reservations.
                     Where(r => r.StartTime >= DateTime.Today && r.EndTime <= DateTime.Today.AddDays(6)).ToList();
         }
