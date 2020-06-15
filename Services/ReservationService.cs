@@ -28,8 +28,6 @@ namespace VPM.Services
 
     public class ReservationService /*: IReservationService*/
     {
-        public IQueryable<Reservation> Repo;
-
         private readonly ApplicationDbContext _context;
 
         private readonly List<string> _errors = new List<string> { };
@@ -37,9 +35,6 @@ namespace VPM.Services
         public ReservationService(ApplicationDbContext context)
         {
             _context = context;
-            Repo = _context.Reservations
-                .Include(r => r.ApplicationUser)
-                .Include(r => r.Building);
         }
 
         /*
@@ -244,10 +239,7 @@ namespace VPM.Services
         {
             try
             {
-                return await _context.Reservations
-                .Include(r => r.ApplicationUser)
-                .Include(r => r.Building)
-                .FirstOrDefaultAsync(m => m.Id == reservationId);
+                return await _context.Reservations.FirstOrDefaultAsync(m => m.Id == reservationId);
             }
             catch (Exception ex)
             {
@@ -258,31 +250,32 @@ namespace VPM.Services
 
         public async Task<IList<Reservation>> GetReservationsAsync(ReservationQuery query)
         {
+
+            IQueryable<Reservation> Repo = _context.Reservations
+                .Include(r => r.ApplicationUser)
+                .Include(r => r.Building);
+
             //Filtering based on the given Query
             if (query.BuildingId != Guid.Empty)
-            {
                 Repo = Repo.Where(r => r.BuildingId == query.BuildingId);
-            }
 
             if (query.Unit != null)
-            {
                 Repo = Repo.Where(r => r.ApplicationUser.Unit == query.Unit);
-            }
 
             if (query.VehiclePlateNumber != null)
-            {
                 Repo = Repo.Where(r => r.VehiclePlateNumber == query.VehiclePlateNumber);
-            }
 
-            if (query.ApplicationUserId != null)
-            {
-                Repo = Repo.Where(r => r.ApplicationUserId == query.ApplicationUserId);
-            }
+            if (query.ApplicationUserEmail != null)
+                Repo = Repo.Where(r => r.ApplicationUserId == query.ApplicationUserEmail);
 
-            if (!query.ShowExpired)//Only showing the non-expired reservations
-            {
+            if (query.From != null)
+                Repo = Repo.Where(r => r.StartTime >= query.From);
+
+            if (query.To != null)
+                Repo = Repo.Where(r => r.EndTime <= query.To);
+
+            if (!query.ShowExpired) //Only showing the non-expired reservations
                 Repo = Repo.Where(r => r.EndTime >= DateTime.Now);
-            }
 
             return await Repo.AsNoTracking().ToListAsync();
         }

@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VPM.Data.Entities;
 using VPM.Data.Queries;
-using VPM.Pages.Shared;
 using VPM.Services;
-using VPM.ViewComponents;
 
 namespace VPM.Pages.Buildings
 {

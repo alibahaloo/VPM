@@ -61,7 +61,7 @@
     <div class="col-md-8">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        @await Component.InvokeAsync("WeeklyView", new { Building = Model.Reservation.Building })
+        @await Component.InvokeAsync("WeeklyCalendar", new { Building = Model.Reservation.Building })
     </div>
 </div>
 

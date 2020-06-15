@@ -14,7 +14,7 @@ namespace VPM.Data.Entities
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         [Required]
-        [Display(Name = "Vehicle Plate Number")]
+        [Display(Name = "Plate #")]
         public string VehiclePlateNumber { get; set; }
 
         [Required]
@@ -53,8 +53,6 @@ namespace VPM.Data.Entities
         {
             get
             {
-                // MUST MOVE TO CONTROLLER!
-                //THIS IS WRONG!!! CANNOT GET =
                 //Object is not new
                 if (durationHour == 0)
                 {
