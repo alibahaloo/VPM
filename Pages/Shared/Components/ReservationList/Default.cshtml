@@ -1,0 +1,150 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model VPM.ViewComponents.ReservationListViewComponent
+<hr />
+<form method="post">
+    <div class="form-row bg-light navbar navbar-expand-lg navbar-light">
+        @if (Model.AvailableInputs.ByUnit)
+        {
+            <div class="col-1">
+                <input asp-for="Query.Unit" class="form-control" placeholder="@Html.DisplayNameFor(model => model.Query.Unit)" />
+            </div>
+        }
+
+        @if (Model.AvailableInputs.ByVehiclePlateNumber)
+        {
+            <div class="col-1">
+                <input asp-for="Query.VehiclePlateNumber" class="form-control" placeholder="@Html.DisplayNameFor(model => model.Query.VehiclePlateNumber)" />
+            </div>
+        }
+
+        @if (Model.AvailableInputs.ByResident)
+        {
+            <div class="col-2">
+                <input asp-for="Query.ApplicationUserEmail" class="form-control" placeholder="@Html.DisplayNameFor(model => model.Query.ApplicationUserEmail)" />
+            </div>
+        }
+
+        @if (Model.AvailableInputs.ByBuilding)
+        {
+            <div class="col-2">
+                <select asp-for="Query.BuildingId" asp-items="Model.BuildingOptions" class="form-control"></select>
+            </div>
+        }
+
+        @if (Model.AvailableInputs.ByDate)
+        {
+            <div class="col-2">
+                <input asp-for="Query.From" class="form-control" placeholder="@Html.DisplayNameFor(model => model.Query.From)" />
+            </div>
+
+            <div class="col-2">
+                <input asp-for="Query.To" class="form-control" placeholder="@Html.DisplayNameFor(model => model.Query.To)" />
+            </div>
+        }
+
+        @if (Model.AvailableInputs.ByValidity)
+        {
+            <div class="col-2">
+                <label class="form-check-label">
+                    <input class="form-co-input" asp-for="Query.ShowExpired" /> @Html.DisplayNameFor(model => model.Query.ShowExpired)
+                </label>
+            </div>
+        }
+    </div>
+    <div class="form-row bg-light navbar navbar-expand-lg navbar-light">
+        <div class="col-3">
+            <input type="submit" value="Apply Filters" class="btn btn-primary" /> |
+            <a asp-page="../Admin/Users">
+                <input type="button" value="Reset" class="btn btn-dark" />
+            </a>
+        </div>
+    </div>
+</form>
+
+
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Reservations[0].VehiclePlateNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reservations[0].StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reservations[0].EndTime)
+            </th>
+            @{
+                if (User.IsInRole("Admin"))
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations[0].ApplicationUser)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations[0].Building)
+                    </th>
+                }
+                else if (User.IsInRole("Manager"))
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations[0].ApplicationUser)
+                    </th>
+                }
+            }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Reservations)
+        {
+            string expired = item.EndTime <= DateTime.Now ? "style=color:#FF0000;" : string.Empty;
+            <tr>
+                <td>
+                    @if (expired != string.Empty)
+                    {
+                        <span @expired>[EXPIRED]</span>
+                    }
+
+                    @Html.DisplayFor(modelItem => item.VehiclePlateNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndTime)
+                </td>
+                @{
+                    if (User.IsInRole("Admin"))
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.FullName)
+                            <br />
+                            <spann>(</spann>
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
+                            <spann>)</spann>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Building.Name)
+                        </td>
+                    }
+                    else if (User.IsInRole("Manager"))
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.FullName)
+                        </td>
+                    }
+                }
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

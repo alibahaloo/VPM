@@ -8,8 +8,8 @@ using VPM.Data.Entities;
 
 namespace VPM.ViewComponents
 {
-    [ViewComponent(Name = "WeeklyView")]
-    public class WeeklyViewViewComponents : ViewComponent
+    [ViewComponent(Name = "WeeklyCalendar")]
+    public class WeeklyCalendarViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
         public IList<Reservation> ThisWeekReservations { get; set; }
@@ -17,7 +17,7 @@ namespace VPM.ViewComponents
 
         public string[] Hours;
 
-        public WeeklyViewViewComponents(ApplicationDbContext context)
+        public WeeklyCalendarViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }
