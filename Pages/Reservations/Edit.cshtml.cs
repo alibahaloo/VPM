@@ -41,7 +41,7 @@ namespace VPM.Pages.Reservations
         {
             /*
              * Reservation.Building is not lazyloaded! so we have to manually add it here
-             * making it ready for service to use
+             * making it ready for the page ti be used (for input settings; min, max, etc)
              */
             Reservation.Building = await _buildingService.GetBuildingAsync(Reservation.BuildingId);
 

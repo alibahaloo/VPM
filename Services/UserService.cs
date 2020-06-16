@@ -70,10 +70,7 @@ namespace VPM.Services
         {
             try
             {
-                return await _context.Users
-                    .Include(b => b.Building)
-                    .Include(b => b.Reservations)
-                    .FirstOrDefaultAsync(r => r.Id == userId);                
+                return await _context.Users.FirstOrDefaultAsync(r => r.Id == userId);                
             }
             catch (Exception)
             {

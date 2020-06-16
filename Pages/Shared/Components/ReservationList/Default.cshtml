@@ -88,11 +88,17 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Reservations[0].Building)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations[0].ApplicationUser.Unit)
+                    </th>
                 }
                 else if (User.IsInRole("Manager"))
                 {
                     <th>
                         @Html.DisplayNameFor(model => model.Reservations[0].ApplicationUser)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations[0].ApplicationUser.Unit)
                     </th>
                 }
             }
@@ -131,11 +137,21 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Building.Name)
                         </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.Unit)
+                        </td>
                     }
                     else if (User.IsInRole("Manager"))
                     {
                         <td>
                             @Html.DisplayFor(modelItem => item.ApplicationUser.FullName)
+                            <br />
+                            <spann>(</spann>
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
+                            <spann>)</spann>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.Unit)
                         </td>
                     }
                 }
