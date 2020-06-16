@@ -54,47 +54,5 @@
 <hr />
 
 <h2>Reservations</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicationUser.Reservations[0].VehiclePlateNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicationUser.Reservations[0].StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicationUser.Reservations[0].EndTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicationUser.Reservations[0].Created)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var reservation in Model.ApplicationUser.Reservations)
-        {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => reservation.VehiclePlateNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => reservation.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => reservation.EndTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => reservation.Created)
-            </td>
-            <td>
-                <a asp-page="../Reservations/Edit" asp-route-id="@reservation.Id">Edit</a> |
-                <a asp-page="../Reservations/Details" asp-route-id="@reservation.Id">Details</a> |
-                <a asp-page="../Reservations/Delete" asp-route-id="@reservation.Id">Delete</a>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+<hr />
+@await Component.InvokeAsync("ReservationList", new { Reservations = Model.Reservations, Query = Model.Query })
