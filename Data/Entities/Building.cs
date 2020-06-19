@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,19 +23,18 @@ namespace VPM.Data.Entities
 
         public Guid Id { get; set; }
 
-        /*[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime LastUpdated { get; set; }*/
-
         [Display(Name = "Created At")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         [Required]
         [Display(Name = "Name")]
+        [StringLength(20, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         public string Name { get; set; }
 
         [Required]
         [Display(Name = "Address")]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         public string Address { get; set; }
 
         [Required]
@@ -44,20 +42,20 @@ namespace VPM.Data.Entities
         public bool IsActive { get; set; } = true;
 
         [Required]
-        [Display(Name = "Available Parkings")]
+        [Display(Name = "Parkings")]
         public int VisitorParkingCount { get; set; } = 1; //Total number of visitor parkings in the building
 
         [Required]
-        [Display(Name = "Allowed Reservations per unit")]
+        [Display(Name = "Max Reservations/Unit")]
         public int AllowedReservationPerUnit { get; set; } = 1; //Maximum number of reservations to be made by a single unit
 
         [Required]
-        [Display(Name = "Max reservation duration")]
+        [Display(Name = "Max Duration (Hrs)")]
         [Range(1, 24)]
         public int AllowedReservationLength { get; set; } = 1; //Maximum allowed time to be reserved at a time (in hours?)
 
         [Required]
-        [Display(Name = "Reservations Interval")]
+        [Display(Name = "Reservation Interval (Mins)")]
         public AllowedReservationIntervals ReservationInterval { get; set; } = AllowedReservationIntervals.FH; //Used for steps in time picker
 
         /*

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace VPM.Data.Queries
 {
@@ -16,22 +13,26 @@ namespace VPM.Data.Queries
         [DisplayName("Building")]
         public Guid BuildingId { get; set; } = Guid.Empty;
 
+        [DisplayName("All Buildings")]
+        public bool ShowAllBuildings { get; set; } = true;
+
         [DisplayName("Resident @")]
         [DataType(DataType.EmailAddress)]
         public string ApplicationUserEmail { get; set; }
         public string Unit { get; set; }
 
         [DisplayName("Plate #")]
+        [StringLength(10, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         public string VehiclePlateNumber { get; set; }
 
         [DisplayName("Show Expired Reservations")]
         public bool ShowExpired { get; set; } = true;
 
-        [DisplayName("From")]
+        [DisplayName("Begin")]
         [DataType(DataType.Date)]
         public DateTime From { get; set; } = DateTime.Today.AddMonths(-1); //Default should show all!
 
-        [DisplayName("To")]
+        [DisplayName("End")]
         [DataType(DataType.Date)]
         public DateTime To { get; set; } = DateTime.Today.AddMonths(+1); //Default should show all!
     }

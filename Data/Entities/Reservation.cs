@@ -6,7 +6,6 @@ namespace VPM.Data.Entities
 {
     public class Reservation
     {
-        /*[DatabaseGenerated(DatabaseGeneratedOption.Identity)]*/
         public Guid Id { get; set; }
 
         [Display(Name = "Created At")]
@@ -15,6 +14,7 @@ namespace VPM.Data.Entities
 
         [Required]
         [Display(Name = "Plate #")]
+        [StringLength(10, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         public string VehiclePlateNumber { get; set; }
 
         [Required]
