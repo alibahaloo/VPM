@@ -1,13 +1,11 @@
 ﻿@page
 @model VPM.Pages.Reservations.IndexModel
-
-
 @{
     string title = string.Empty;
 
     if (User.IsInRole("Admin"))
     {
-        title = "All Reservations";
+        title = "Reservations";
     }
     else if (User.IsInRole("Manager"))
     {
@@ -20,7 +18,6 @@
 
     ViewData["Title"] = title;
 }
-
 
 
 <div class="row">

@@ -1,0 +1,122 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model VPM.ViewComponents.BuildingListViewComponent
+@using VPM.Data.Entities
+
+
+<script type="text/javascript">
+    function toggleSelection() {
+
+        var checkbox = document.getElementById("Query_ShowAllInterval");
+        var select = document.getElementById("Query_ReservationInterval");
+
+        if (checkbox.checked) {
+            select.disabled = true;
+        } else {
+            select.disabled = false;
+        }
+    }
+</script>
+
+<style>
+    .input-label {
+        margin-bottom: 0px;
+    }
+</style>
+<hr />
+<form method="post">
+    <div class="form-row bg-light navbar navbar-expand-lg navbar-light">
+        <div class="col-2">
+            <label class="form-check-label">@Html.DisplayNameFor(model => model.Query.Name):</label>
+            <input asp-for="Query.Name" class="form-control" placeholder="Building" />
+        </div>
+        <div class="col-3">
+            <label class="form-check-label">@Html.DisplayNameFor(model => model.Query.Address):</label>
+            <input asp-for="Query.Address" class="form-control" placeholder="123 Street" />
+        </div>
+        <div class="col-2">
+            <label class="input-label">
+                <input class="form-co-input" asp-for="Query.ShowAllInterval" onclick="toggleSelection()" /> @Html.DisplayNameFor(model => model.Query.ShowAllInterval):
+            </label>
+            <select asp-for="Query.ReservationInterval" asp-items="Html.GetEnumSelectList<AllowedReservationIntervals>()" class="form-control" disabled></select>
+            <span asp-validation-for="Query.ReservationInterval" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-row bg-light navbar navbar-expand-lg navbar-light">
+        <div class="col-3">
+            <input type="submit" value="Apply Filters" class="btn btn-primary" /> |
+            <a asp-page="../Admin/Buildings">
+                <input type="button" value="Reset" class="btn btn-dark" />
+            </a>
+        </div>
+        <div class="col-8">
+            <label class="form-check-label">
+                <input class="form-co-input" asp-for="Query.ShowActiveOnly" /> @Html.DisplayNameFor(model => model.Query.ShowActiveOnly)
+            </label>
+        </div>
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Buildings[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Buildings[0].Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Buildings[0].VisitorParkingCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Buildings[0].AllowedReservationPerUnit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Buildings[0].AllowedReservationLength)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Buildings[0].ReservationInterval)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Buildings[0].IsActive)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Buildings)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VisitorParkingCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AllowedReservationPerUnit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AllowedReservationLength)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReservationInterval)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

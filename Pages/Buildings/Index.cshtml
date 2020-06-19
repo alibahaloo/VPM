@@ -1,89 +1,19 @@
 ﻿@page
 @model VPM.Pages.Buildings.IndexModel
-
 @{
-    string title = string.Empty;
-
-    if (User.IsInRole("Admin"))
-    {
-        title = "All Buildings";
-    }
-    else if (User.IsInRole("Manager"))
-    {
-        title = "Building Details";
-    }
-    else if (User.IsInRole("Resident"))
-    {
-        title = "My Building";
-    }
+    string title = "Buildings";
 
     ViewData["Title"] = title;
-
 }
 
-<h1>@title</h1>
-<hr />
-<p>
-    <a asp-page="Create"><input type="button" value="Add new building" class="btn btn-primary" /></a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Buildings[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Buildings[0].Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Buildings[0].IsActive)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Buildings[0].VisitorParkingCount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Buildings[0].AllowedReservationPerUnit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Buildings[0].AllowedReservationLength)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Buildings[0].ReservationInterval)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Buildings)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VisitorParkingCount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AllowedReservationPerUnit)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AllowedReservationLength)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReservationInterval)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-6">
+        <h1>@title</h1>
+    </div>
+    <div class="col-6 text-right">
+        <p>
+            <a asp-page="Create"><input type="button" value="Add New Building" class="btn btn-primary" /></a>
+        </p>
+    </div>
+</div>
+@await Component.InvokeAsync("BuildingList", new { Buildings = Model.Buildings, Query = Model.Query })

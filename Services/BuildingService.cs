@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VPM.Data;
 using VPM.Data.Entities;
+using VPM.Data.Queries;
 
 namespace VPM.Services
 {
@@ -107,17 +108,27 @@ namespace VPM.Services
             
         }
 
-        public async Task<IList<Building>> GetBuildingsAsync()
+        public async Task<IList<Building>> GetBuildingsAsync(BuildingQuery query = null)
         {
-            try
-            {
-                return await _context.Buildings.ToListAsync();
-            }
-            catch (Exception ex)
-            {
+            IQueryable<Building> Repo = _context.Buildings
+                .Include(b => b.Reservations);
 
-                throw;
+            if (query != null)
+            {
+                if (query.Name != null)
+                    Repo = Repo.Where(b => b.Name == query.Name);
+
+                if (query.Address != null)
+                    Repo = Repo.Where(b => b.Address == query.Address);
+
+                if (!query.ShowAllInterval)
+                    Repo = Repo.Where(b => b.ReservationInterval == query.ReservationInterval);
+
+                if (query.ShowActiveOnly)
+                    Repo = Repo.Where(b => b.IsActive == true);
             }
+
+            return await Repo.AsNoTracking().ToListAsync();
         }
 
         public IList<Building> GetBuildings()
