@@ -42,15 +42,15 @@ namespace VPM.Data.Entities
         public bool IsActive { get; set; } = true;
 
         [Required]
-        [Display(Name = "Parkings")]
+        [Display(Name = "Total Number of Available Parkings")]
         public int VisitorParkingCount { get; set; } = 1; //Total number of visitor parkings in the building
 
         [Required]
-        [Display(Name = "Max Reservations/Unit")]
+        [Display(Name = "Allowed Reservations Per Unit")]
         public int AllowedReservationPerUnit { get; set; } = 1; //Maximum number of reservations to be made by a single unit
 
         [Required]
-        [Display(Name = "Max Duration (Hrs)")]
+        [Display(Name = "Reservation Maximum Duration (Hrs)")]
         [Range(1, 24)]
         public int AllowedReservationLength { get; set; } = 1; //Maximum allowed time to be reserved at a time (in hours?)
 

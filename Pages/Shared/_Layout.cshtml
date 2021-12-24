@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@addTagHelper *, Vereyon.Web.FlashMessage
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -30,6 +32,8 @@
         </nav>
     </header>
     <div class="container">
+        <flash dismissable="false" />
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

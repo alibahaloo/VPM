@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Vereyon.Web;
 using VPM.Areas.Identity;
 using VPM.Data;
 using VPM.Data.Entities;
@@ -84,6 +85,9 @@ namespace VPM
             services.AddTransient<RoleService>();
             //Considering Using Static Class instead if possible
             services.AddTransient<AppService>();
+
+            // Add services required for flash message to work.
+            services.AddFlashMessage();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
