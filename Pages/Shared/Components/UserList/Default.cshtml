@@ -1,0 +1,157 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model VPM.ViewComponents.UserListViewComponent
+    <script type="text/javascript">
+        function toggleBuildingSelection() {
+
+            var checkbox = document.getElementById("Query_ShowAllBuildings");
+            var select = document.getElementById("Query_BuildingId");
+
+            if (checkbox.checked) {
+                select.disabled = true;
+            } else {
+                select.disabled = false;
+            }
+        }
+
+        function toggleRoleSelection() {
+
+            var checkbox = document.getElementById("Query_ShowAllRoles");
+            var select = document.getElementById("Query_Role");
+
+            if (checkbox.checked) {
+                select.disabled = true;
+            } else {
+                select.disabled = false;
+            }
+        }
+    </script>
+
+    <style>
+        .input-label {
+            margin-bottom: 0px;
+        }
+    </style>
+    <hr />
+    <form method="post">
+        <div class="form-row bg-light navbar navbar-expand-lg navbar-light">
+            @if (Model.Input.ByFullName)
+            {
+                <div class="col-3">
+                    <label class="form-check-label">@Html.DisplayNameFor(model => model.Query.FullName):</label>
+                    <input asp-for="Query.FullName" class="form-control" placeholder="John Doe" />
+                </div>
+            }
+            @if (Model.Input.ByEmail)
+            {
+                <div class="col-3">
+                    <label class="form-check-label">@Html.DisplayNameFor(model => model.Query.Email):</label>
+                    <input asp-for="Query.Email" class="form-control" placeholder="john.doe@email.com" />
+                </div>
+            }
+            @if (Model.Input.ByUnit)
+            {
+                <div class="col-1">
+                    <label class="form-check-label">@Html.DisplayNameFor(model => model.Query.Unit):</label>
+                    <input asp-for="Query.Unit" class="form-control" placeholder="123" />
+                </div>
+            }
+            @if (Model.Input.ByBuilding)
+            {
+                <div class="col-2">
+                    <label class="input-label">
+                        <input class="form-co-input" asp-for="Query.ShowAllBuildings" onclick="toggleBuildingSelection()" /> @Html.DisplayNameFor(model => model.Query.ShowAllBuildings):
+                    </label>
+                    <select asp-for="Query.BuildingId" asp-items="Model.BuildingOptions" class="form-control" disabled></select>
+                </div>
+            }
+            @if (Model.Input.ByRole)
+            {
+                <div class="col-2">
+                    <label class="input-label">
+                        <input class="form-co-input" asp-for="Query.ShowAllRoles" onclick="toggleRoleSelection()" /> @Html.DisplayNameFor(model => model.Query.ShowAllRoles):
+                    </label>
+                    <select asp-for="Query.Role" asp-items="Model.RoleOptions" class="form-control" disabled></select>
+                </div>
+            }
+            @if (Model.Input.ByCreated)
+            {
+
+            }
+
+        </div>
+        <div class="form-row bg-light navbar navbar-expand-lg navbar-light">
+            <div class="col-3">
+                <input type="submit" value="Apply Filters" class="btn btn-primary" /> |
+                <a asp-page="../Admin/Buildings">
+                    <input type="button" value="Reset" class="btn btn-dark" />
+                </a>
+            </div>
+            <div class="col-8">
+                
+            </div>
+        </div>
+    </form>
+
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Email Address
+                </th>
+                <th>
+                    Full Name
+                </th>
+                <th>
+                    Unit #
+                </th>
+                <th>
+                    Building
+                </th>
+                <th>
+                    Roles
+                </th>
+                <th>
+                    Created at
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Users)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Unit)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Building.Name)
+                    </td>
+                    <td>
+                        @foreach (var userRole in item.UserRoles)
+                        {
+                            <span>@userRole.Role.Name</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modeItem => item.Created)
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

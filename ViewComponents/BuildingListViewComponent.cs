@@ -16,8 +16,8 @@ namespace VPM.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(IList<Building> buildings, BuildingQuery query)
         {
-            Query = query; //Query is used to set the state of the toolbar according to the shown query
-            Buildings = buildings; //To generat ethe list
+            Query = query; //Query is used to set the state of the tool-bar according to the shown query
+            Buildings = buildings; //To generate the list
 
             return View(this);
         }

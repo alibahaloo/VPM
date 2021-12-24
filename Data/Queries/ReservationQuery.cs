@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace VPM.Data.Queries
 {
     /*
-     * These are the items that Resevation lists can be quered against
+     * These are the items that Reservation lists can be queried against
      * For ==Getting== reservation lists
      */
     public class ReservationQuery
@@ -16,7 +16,7 @@ namespace VPM.Data.Queries
         [DisplayName("All Buildings")]
         public bool ShowAllBuildings { get; set; } = true;
 
-        [DisplayName("Resident @")]
+        [DisplayName("Resident")]
         [DataType(DataType.EmailAddress)]
         public string ApplicationUserEmail { get; set; }
         public string Unit { get; set; }
@@ -35,5 +35,9 @@ namespace VPM.Data.Queries
         [DisplayName("End")]
         [DataType(DataType.Date)]
         public DateTime To { get; set; } = DateTime.Today.AddMonths(+1); //Default should show all!
+
+        [DisplayName("CreatedAt")]
+        [DataType(DataType.Date)]
+        public DateTime Created { get; set; }
     }
 }

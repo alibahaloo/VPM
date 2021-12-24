@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using VPM.Data.Entities;
 
@@ -22,5 +23,9 @@ namespace VPM.Data.Queries
 
         [DisplayName("Reservation Interval")]
         public AllowedReservationIntervals ReservationInterval { get; set; } = AllowedReservationIntervals.FH;
+
+        [DisplayName("CreatedAt")]
+        [DataType(DataType.Date)]
+        public DateTime Created { get; set; }
     }
 }

@@ -14,6 +14,8 @@
 <h2>Add new user</h2>
 <hr />
 
+<div asp-validation-summary="All" class="text-danger"></div>
+
 <form method="post">
     <div class="row">
         <div class="col-md-4">
@@ -67,74 +69,7 @@
     </div>
 </form>
 
-
-<div class="row">
-    <div class="col-md-12">
-        <h3>Existing Users</h3>
-
-        <div asp-validation-summary="All" class="text-danger"></div>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        Email Address
-                    </th>
-                    <th>
-                        Full Name
-                    </th>
-                    <th>
-                        Unit #
-                    </th>
-                    <th>
-                        Building
-                    </th>
-                    <th>
-                        Roles
-                    </th>
-                    <th>
-                        Created at
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Users)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FullName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Unit)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Building.Name)
-                        </td>
-                        <td>
-                            @foreach (var userRole in item.UserRoles)
-                            {
-                                <span>@userRole.Role.Name</span>
-                            }
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modeItem => item.Created)
-                        </td>
-                        <td>
-                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
+@await Component.InvokeAsync("UserList", new { Users = Model.Users, Query = Model.Query, Input = Model.FilterInput })
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

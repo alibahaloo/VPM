@@ -9,7 +9,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using VPM.Data.Entities;
+using VPM.Data.Queries;
 using VPM.Services;
+using VPM.ViewComponents;
 
 namespace VPM.Pages.Users
 {
@@ -50,6 +52,10 @@ namespace VPM.Pages.Users
             public string SelectedRoleName { get; set; }
         }
 
+        [BindProperty] //Data has to be binded for the inputs to hold their state (this is only required if using Filter toolbar)
+        public UserQuery Query { get; set; } = new UserQuery { };
+        public UserFilterInput FilterInput { get; set; }
+
         public IndexModel(UserService userService, RoleService roleService, BuildingService buildingService)
         {
             _userService = userService;
@@ -59,6 +65,15 @@ namespace VPM.Pages.Users
 
             //THIS IS WIERD!
             //Users = _userService.GetApplicationUsersAsync().Result;
+
+            FilterInput = new UserFilterInput
+            {
+                ByBuilding = true,
+                ByFullName = true,
+                ByEmail = true,
+                ByRole = true,
+                ByUnit = true
+            };
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -70,6 +85,11 @@ namespace VPM.Pages.Users
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (Query == new UserQuery { })
+            {
+                var msg = 0;
+            }
+
             if (ModelState.IsValid)
             {
                 ApplicationUser applicationUser = new ApplicationUser { 
@@ -97,7 +117,7 @@ namespace VPM.Pages.Users
             }
 
             //Used to populate the list before loading the page
-            Users = await _userService.GetUsersAsync();
+            Users = await _userService.GetUsersAsync(Query);
             return RedirectToPage();
         }
     }

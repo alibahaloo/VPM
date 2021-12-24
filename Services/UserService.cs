@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VPM.Data;
 using VPM.Data.Entities;
+using VPM.Data.Queries;
 
 namespace VPM.Services
 {
@@ -17,7 +18,7 @@ namespace VPM.Services
 
         private readonly List<string> _errors = new List<string> { };
 
-        public UserService(ApplicationDbContext context, 
+        public UserService(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             RoleService roleService)
         {
@@ -41,14 +42,39 @@ namespace VPM.Services
             }
             else
             {
-                return new ServiceResult { Success = true};
+                return new ServiceResult { Success = true };
             }
         }
 
 
-        public async Task<List<ApplicationUser>> GetUsersAsync()
+        public async Task<List<ApplicationUser>> GetUsersAsync(UserQuery query = null)
         {
-            return await _userManager.Users?.Include(u => u.Building).ToListAsync();
+            //return await _userManager.Users?.Include(u => u.Building).ToListAsync();
+
+            IQueryable<ApplicationUser> Repo = _context.ApplicationUsers
+                .Include(u => u.Building)
+                .Include(u => u.Reservations) // TODO: might not be needed at this point!
+                .Include(u => u.UserRoles).ThenInclude(r => r.Role);
+
+            if (query != null)
+            {
+                if (query.FullName != null)
+                    Repo = Repo.Where(u => u.FullName == query.FullName);
+
+                if (query.Email != null)
+                    Repo = Repo.Where(u => u.Email == query.Email);
+
+                if ((!query.ShowAllBuildings) && (query.BuildingId != Guid.Empty))
+                    Repo = Repo.Where(u => u.BuildingId == query.BuildingId);
+
+                if((!query.ShowAllRoles) && (query.Role != null))
+                {
+                    List<string> userids = _context.UserRoles.Where(a => a.RoleId == "").Select(b => b.UserId).Distinct().ToList();
+                    Repo = Repo.Where(u => userids.Any(c => c == u.Id));
+                }
+            }
+
+            return await Repo.AsNoTracking().ToListAsync();
         }
 
         public List<ApplicationUser> GetUsers()
@@ -70,7 +96,7 @@ namespace VPM.Services
         {
             try
             {
-                return await _context.Users.FirstOrDefaultAsync(r => r.Id == userId);                
+                return await _context.Users.FirstOrDefaultAsync(r => r.Id == userId);
             }
             catch (Exception)
             {

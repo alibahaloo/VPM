@@ -32,13 +32,13 @@ namespace VPM.ViewComponents
         public IList<Reservation> Reservations { get; set; }
         public ReservationQuery Query { get; set; }
         public AvailableInputs AvailableInputs { get; set; }
-        public SelectList BuildingOptions { get; set; } //Used to populate Building dropdownlist
+        public SelectList BuildingOptions { get; set; } //Used to populate Building drop-down-list
         public async Task<IViewComponentResult> InvokeAsync(IList<Reservation> reservations, ReservationQuery query)
         {
             BuildingOptions = new SelectList(_buildingService.GetBuildings(), nameof(Building.Id), nameof(Building.Name));
             
-            Query = query; //Query is used to set the state of the toolbar according to the shown query
-            Reservations = reservations; //To generat ethe list
+            Query = query; //Query is used to set the state of the tool-bar according to the shown query
+            Reservations = reservations; //To generate the list
 
             if (User.IsInRole("Admin"))
             {
