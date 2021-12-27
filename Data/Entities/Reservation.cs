@@ -73,13 +73,13 @@ namespace VPM.Data.Entities
         [Required]
         [NotMapped]
         [Display(Name = "Minute")]
-        [Range(0, 60)]
+        [Range(-1, 60)]
         public int DurationMin
         {
             get
             {
                 //Object is not new
-                if (durationMin == 0)
+                if (durationMin == -1)
                 {
                     var diff = EndTime - StartTime; //Calculate the diff
                     return diff.Minutes;

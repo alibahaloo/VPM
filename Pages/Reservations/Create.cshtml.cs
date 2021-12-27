@@ -34,8 +34,8 @@ namespace VPM.Pages.Reservations
 
         public async Task<IActionResult> OnPostAsync()
         {
-            //Used for input
-            //Building = await _buildingService.GetBuildingAsync(User.Identity.GetBuildingId());
+            //Used for inputs
+            Building = await _buildingService.GetBuildingAsync(User.Identity.GetBuildingId());
 
             if (!ModelState.IsValid)
             {

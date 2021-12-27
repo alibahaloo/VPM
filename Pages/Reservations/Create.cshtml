@@ -5,6 +5,24 @@
     ViewData["Title"] = "Reservation | Create";
 }
 
+<script type="text/javascript">
+    // Function to set the Max value for allowed reservation per unit Input.
+    function setDate() {
+        var today = new Date();
+        
+        var input = document.getElementById("Reservation_Date");
+        input.value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+
+        var timeInput = document.getElementById("Reservation_StartTime");
+        timeInput.value = today.getHours() + ':' + today.getMinutes();
+    }
+
+    // Registering the function to run at page load
+    window.onload = function() {
+        setDate();
+    };
+</script>
+
 <h1>Create Reservation</h1>
 <hr />
 <div class="row">
@@ -19,7 +37,7 @@
             <div class="row">
                 <div class="col-md-7 form-group">
                     <label asp-for="Reservation.Date" class="control-label"></label>
-                    <input asp-for="Reservation.Date" class="form-control" />
+                    <input asp-for="Reservation.Date" class="form-control" onload="setDate()" />
                     <span asp-validation-for="Reservation.Date" class="text-danger"></span>
                 </div>
                 <div class="col-md-5 form-group">
@@ -37,11 +55,15 @@
                     <input asp-for="Reservation.DurationHour" class="form-control" max="@Model.Building.AllowedReservationLength" min="0" step="1" value="0" />
                     <span asp-validation-for="Reservation.DurationHour" class="text-danger"></span>
                 </div>
-                <div class="col-md-4 form-group">
-                    <label asp-for="Reservation.DurationMin" class="control-label"></label>
-                    <input asp-for="Reservation.DurationMin" class="form-control" min="0" max="@Model.Building.MinuteMaxLength" step="@Model.Building.MinuteStep" value="0" />
-                    <span asp-validation-for="Reservation.DurationMin" class="text-danger"></span>
-                </div>
+                @*CHECK IF Building.ReservationInterval IS FH -> HIDE MINUES INPUT*@
+                @if (Model.Building.ReservationInterval != Data.Entities.AllowedReservationIntervals.FH)
+                {
+                    <div class="col-md-4 form-group">
+                        <label asp-for="Reservation.DurationMin" class="control-label"></label>
+                        <input asp-for="Reservation.DurationMin" class="form-control" min="0" max="@Model.Building.MinuteMaxLength" step="@Model.Building.MinuteStep" value="0" />
+                        <span asp-validation-for="Reservation.DurationMin" class="text-danger"></span>
+                    </div>
+                }
             </div>
 
             <hr />
@@ -62,5 +84,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }
