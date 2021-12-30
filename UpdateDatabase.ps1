@@ -1,4 +1,8 @@
-﻿$env=$args[0]
+﻿# Initialization script. This script needs to run the very first the application starts.
+# pass "dev" to setup local environment
+# after susccessful setup, go to <localhost>/init/ to continue with the setup
+
+$env=$args[0]
 
 $AcceptedEnvs = "prod", "dev"
 $CheckArg = $AcceptedEnvs.Contains($env)
@@ -22,8 +26,11 @@ $connectionString = "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=VPM;Inte
 Write-Host "Connection String: "
 Write-Host $connectionString
 
-# Delete old migrations
-rm Migrations -r
+if (Test-Path -Path Migrations) {
+	# Delete old migrations
+	rm Migrations -r
+}
+
 # Recreate migrations
 dotnet ef migrations add InitialCreate
 # Setup the ConnectionStrings based on the selected ENV
