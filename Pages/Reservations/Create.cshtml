@@ -52,7 +52,7 @@
             <div class="row">
                 <div class="col-md-4 form-group">
                     <label asp-for="Reservation.DurationHour" class="control-label"></label>
-                    <input asp-for="Reservation.DurationHour" class="form-control" max="@Model.Building.AllowedReservationLength" min="0" step="1" value="0" />
+                    <input asp-for="Reservation.DurationHour" class="form-control" max="@Model.Building.AllowedReservationLength" min="1" step="1" value="1" />
                     <span asp-validation-for="Reservation.DurationHour" class="text-danger"></span>
                 </div>
                 @*CHECK IF Building.ReservationInterval IS FH -> HIDE MINUES INPUT*@
@@ -60,7 +60,7 @@
                 {
                     <div class="col-md-4 form-group">
                         <label asp-for="Reservation.DurationMin" class="control-label"></label>
-                        <input asp-for="Reservation.DurationMin" class="form-control" min="0" max="@Model.Building.MinuteMaxLength" step="@Model.Building.MinuteStep" value="0" />
+                        <input asp-for="Reservation.DurationMin" class="form-control" min="1" max="@Model.Building.MinuteMaxLength" step="@Model.Building.MinuteStep" value="1" />
                         <span asp-validation-for="Reservation.DurationMin" class="text-danger"></span>
                     </div>
                 }
